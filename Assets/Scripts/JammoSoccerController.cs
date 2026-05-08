@@ -28,6 +28,7 @@ public sealed class JammoSoccerController : MonoBehaviour
     private int normalHash;
     private bool hasBlendParameter;
     private bool hasNormalTrigger;
+    private Transform cameraTarget;
 
     private void Awake()
     {
@@ -36,11 +37,22 @@ public sealed class JammoSoccerController : MonoBehaviour
         blendHash = Animator.StringToHash(blendParameter);
         normalHash = Animator.StringToHash(normalTrigger);
         CacheAnimatorParameters();
+        cameraTarget = transform;
 
         if (followCamera == null)
         {
             followCamera = Camera.main;
         }
+    }
+
+    public void SetCameraTarget(Transform target)
+    {
+        cameraTarget = target;
+    }
+
+    public void ResetCameraTarget()
+    {
+        cameraTarget = transform;
     }
 
     private void Start()
@@ -130,12 +142,12 @@ public sealed class JammoSoccerController : MonoBehaviour
 
     private void FollowWithTopDownCamera()
     {
-        if (followCamera == null)
+        if (followCamera == null || cameraTarget == null)
         {
             return;
         }
 
-        Vector3 targetPosition = transform.position + cameraOffset;
+        Vector3 targetPosition = cameraTarget.position + cameraOffset;
         targetPosition.y = cameraHeight;
         followCamera.transform.position = Vector3.SmoothDamp(
             followCamera.transform.position,
@@ -147,12 +159,12 @@ public sealed class JammoSoccerController : MonoBehaviour
 
     private void SnapCameraToTarget()
     {
-        if (followCamera == null)
+        if (followCamera == null || cameraTarget == null)
         {
             return;
         }
 
-        Vector3 targetPosition = transform.position + cameraOffset;
+        Vector3 targetPosition = cameraTarget.position + cameraOffset;
         targetPosition.y = cameraHeight;
         followCamera.transform.position = targetPosition;
         followCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
