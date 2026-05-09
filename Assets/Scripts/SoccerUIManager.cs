@@ -6,11 +6,15 @@ using System.Collections;
 
 public class SoccerUIManager : MonoBehaviour
 {
+    public static SoccerUIManager Instance { get; private set; }
+
     [Header("References")]
     public PlayerBallInteraction playerInteraction;
     public Button kickButton;
     public Button autoKickButton;
     public Button resetButton;
+    public Button exitButton;
+    public Text scoreText;
     public GameObject goalEffectPrefab;
 
     [Header("Settings")]
@@ -19,9 +23,39 @@ public class SoccerUIManager : MonoBehaviour
     public float goalDetectionDistance = 15f;
 
     private List<Transform> goals = new List<Transform>();
+    private int goalsScored = 0;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void RegisterGoal()
+    {
+        goalsScored++;
+        Debug.Log($"[SoccerUI] Goal Registered! Total: {goalsScored}");
+        
+        UpdateScoreUI();
+        
+        if (goalsScored == 12)
+        {
+            Debug.Log("[SoccerUI] Easter Egg Triggered! Playing special music.");
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayEasterEgg();
+        }
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = $"{goalsScored}-0";
+        }
+    }
 
     void Start()
     {
+        UpdateScoreUI();
         if (playerInteraction == null)
         {
             playerInteraction = FindObjectOfType<PlayerBallInteraction>();
@@ -43,6 +77,11 @@ public class SoccerUIManager : MonoBehaviour
         if (resetButton != null)
         {
             resetButton.onClick.AddListener(ResetScene);
+        }
+
+        if (exitButton != null)
+        {
+            exitButton.onClick.AddListener(ExitGame);
         }
         
         Debug.Log($"[SoccerUI] Manager started. Goals found: {goals.Count}");
@@ -115,6 +154,7 @@ public class SoccerUIManager : MonoBehaviour
 
     void KickBall(Rigidbody ball)
     {
+
         Transform nearestGoal = null;
         float minGoalDistance = float.MaxValue;
 
@@ -137,6 +177,9 @@ public class SoccerUIManager : MonoBehaviour
             ball.linearVelocity = Vector3.zero;
             ball.angularVelocity = Vector3.zero;
             ball.AddForce(direction * kickForce, ForceMode.Impulse);
+            
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayKick();
 
             Debug.Log($"[SoccerUI] Ball kicked towards {nearestGoal.name}. Direction: {direction}");
             StartCoroutine(HandleCameraFollow(ball));
@@ -194,6 +237,19 @@ public class SoccerUIManager : MonoBehaviour
     public void ResetScene()
     {
         Debug.Log("[SoccerUI] Resetting scene...");
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayReset();
+            
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ExitGame()
+    {
+        Debug.Log("[SoccerUI] Exiting game...");
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 }

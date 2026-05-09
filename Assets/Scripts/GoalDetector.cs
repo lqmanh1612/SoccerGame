@@ -14,6 +14,12 @@ public class GoalDetector : MonoBehaviour
         {
             Debug.Log("[GoalDetector] Goal Scored! Spawning confetti.");
             
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayGoal();
+
+            if (SoccerUIManager.Instance != null)
+                SoccerUIManager.Instance.RegisterGoal();
+            
             // Spawn confetti at the goal's position
             if (confettiPrefab != null)
             {

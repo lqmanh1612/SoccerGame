@@ -55,6 +55,7 @@ public sealed class JammoSoccerController : MonoBehaviour
         cameraTarget = transform;
     }
 
+
     private void Start()
     {
         if (hasNormalTrigger)

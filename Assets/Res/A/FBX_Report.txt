@@ -1,0 +1,19 @@
+FBX Path: Assets/Res/Kick Soccerball.fbx
+Animation Type: Generic
+Clip Name: mixamo.com
+Total Bindings: 340
+First Non-Empty Path at [0]: mixamorig:Hips
+Binding[0]: mixamorig:Hips
+Binding[1]: mixamorig:Hips
+Binding[2]: mixamorig:Hips
+Binding[3]: mixamorig:Hips
+Binding[4]: mixamorig:Hips/mixamorig:Spine
+Binding[5]: mixamorig:Hips/mixamorig:Spine
+Binding[6]: mixamorig:Hips/mixamorig:Spine
+Binding[7]: mixamorig:Hips/mixamorig:Spine
+Binding[8]: mixamorig:Hips/mixamorig:Spine/mixamorig:Spine1
+Binding[9]: mixamorig:Hips/mixamorig:Spine/mixamorig:Spine1
+
+Jammo Structure:
+Found Armature.001
+First Child of Armature.001: mixamorig:Hips
