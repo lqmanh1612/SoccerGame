@@ -14,9 +14,9 @@ public class SoccerUIManager : MonoBehaviour
     public GameObject goalEffectPrefab;
 
     [Header("Settings")]
-    public float kickForce = 35f;
+    public float kickForce = 60f;
     public string goalNamePrefix = "soccer goal";
-    public float goalDetectionDistance = 10f;
+    public float goalDetectionDistance = 15f;
 
     private List<Transform> goals = new List<Transform>();
 
@@ -156,7 +156,8 @@ public class SoccerUIManager : MonoBehaviour
             controller.SetCameraTarget(ball.transform);
             
             float timer = 0;
-            while (timer < 3f && ball.linearVelocity.magnitude > 1f)
+            // Follow for up to 5 seconds as long as the ball is moving significantly
+            while (timer < 5f && ball.linearVelocity.magnitude > 0.1f)
             {
                 timer += Time.deltaTime;
                 yield return null;
@@ -173,28 +174,8 @@ public class SoccerUIManager : MonoBehaviour
 
                 if (distToGoal < goalDetectionDistance)
                 {
-                    if (goalEffectPrefab != null)
-                    {
-                        // Spawn at goal position but higher up for visibility
-                        Vector3 spawnPos = goal.position + Vector3.up * 3f;
-                        Debug.Log($"[SoccerUI] GOAL DETECTED! Spawning effect at goal: {spawnPos}");
-                        
-                        GameObject effect = Instantiate(goalEffectPrefab, spawnPos, Quaternion.identity);
-                        if (effect != null)
-                        {
-                            ParticleSystem[] systems = effect.GetComponentsInChildren<ParticleSystem>();
-                            foreach (var ps in systems)
-                            {
-                                ps.Play();
-                            }
-                            Destroy(effect, 5f);
-                        }
-                        effectTriggered = true;
-                    }
-                    else
-                    {
-                        Debug.LogError("[SoccerUI] goalEffectPrefab is NULL! Check Inspector on SoccerCanvas.");
-                    }
+                    Debug.Log($"[SoccerUI] Goal proximity detected by UI for {goal.name}.");
+                    effectTriggered = true;
                     break;
                 }
             }
