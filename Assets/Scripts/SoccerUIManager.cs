@@ -37,7 +37,7 @@ public class SoccerUIManager : MonoBehaviour
         
         UpdateScoreUI();
         
-        if (goalsScored == 12)
+        if (goalsScored == 120)
         {
             Debug.Log("[SoccerUI] Easter Egg Triggered! Playing special music.");
             if (SoundManager.Instance != null)
